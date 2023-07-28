@@ -5,11 +5,14 @@ layout: home
 hero:
   name: "CMC Wiki"
   text: "In-depth guide on UE5's CMC"
-  tagline: My great project tagline
+  tagline: 
   actions:
     - theme: brand
       text: Markdown Examples
       link: /markdown-examples
+    - theme: brand
+      text: Networked Booleans
+      link: /networked-bools
     - theme: alt
       text: API Examples
       link: /api-examples
