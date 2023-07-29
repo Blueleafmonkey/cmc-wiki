@@ -8,21 +8,14 @@ hero:
   tagline: 
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: brand
-      text: Networked Booleans
-      link: /networked-bools
+      text: CharacterMovementComponent
+      link: /CharacterMovementComponent/cmc-header
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: FSavedMove_Character
+      link: /CharacterMovementComponent/FSavedMove_Character/header
 
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
----
+# features:
+#   - title: FSavedMove_Character
+#     details: FSavedMove_Character Class
+# ---
 
