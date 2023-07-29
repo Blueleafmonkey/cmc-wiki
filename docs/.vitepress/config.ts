@@ -18,6 +18,19 @@ export default defineConfig({
           { text: 'Markdown Examples', link: '/markdown-examples' },
           { text: 'Runtime API Examples', link: '/api-examples' }
         ]
+      },
+      {
+        text: 'CharacterMovementComponent',
+        items: [
+          { 
+            text: 'FSavedMove_Character',
+            collapsed: true,
+            items: [ 
+              { text: 'Header', link: '/CharacterMovementComponent/FSavedMove_Character/header' },
+              { text: 'Source', link: '/CharacterMovementComponent/FSavedMove_Character/source' }
+            ]
+          }
+        ]
       }
     ],
 
