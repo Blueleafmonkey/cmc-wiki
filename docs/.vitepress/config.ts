@@ -8,19 +8,34 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'CharacterMovementComponent', link: '/CharacterMovementComponent/cmc-header' }
+      { 
+        text: 'Docs',
+        items: []
+      },
+      { 
+        text: 'Guides',
+        items: [
+          { text: 'Custom Network Data', link: '/Guides/CustomNetworkData/introduction'}
+        ]
+      }
     ],
 
     sidebar: [
       {
-        text: 'CharacterMovementComponent',
+        text: 'Guides',
         items: [
           { 
-            text: 'FSavedMove_Character',
+            text: 'Custom Network Data',
             collapsed: true,
             items: [ 
-              { text: 'Header', link: '/CharacterMovementComponent/FSavedMove_Character/header' },
-              { text: 'Source', link: '/CharacterMovementComponent/FSavedMove_Character/source' }
+              { text: 'Introduction', link: '/Guides/CustomNetworkData/introduction' },
+              { text: 'What and Why?', 
+                collapsed: true,
+                items: [
+                  { text: 'What is it?', link: '/Guides/CustomNetworkData/WhatAndWhy/what' },
+                  { text: 'Why use it?', link: '/Guides/CustomNetworkData/WhatAndWhy/why' }
+                ]
+              }
             ]
           }
         ]

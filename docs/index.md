@@ -8,10 +8,10 @@ hero:
   tagline: 
   actions:
     - theme: brand
-      text: CharacterMovementComponent
-      link: /CharacterMovementComponent/cmc-header
+      text: Guides
+      link: /Guides/guides
     - theme: alt
-      text: FSavedMove_Character
+      text: Docs
       link: /CharacterMovementComponent/FSavedMove_Character/header
 
 # features:
