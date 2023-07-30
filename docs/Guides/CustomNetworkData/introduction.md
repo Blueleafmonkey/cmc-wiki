@@ -19,24 +19,24 @@ During this guide, you will see the terms **Input State**, **Intermediate State*
 
 ### Input State
 
-Input State refers to any value that is used to calculate moves, and these values are purely Client Authoritative.
+The input state refers to any value that is used to calculate moves, and these values are purely Client Authoritative.
 
 There are current only three default input states: **Acceleration**, **Control Rotation**, and **CompressedFlags**. These values are driven directly by player inputs, such as key presses or mouse movements. Because these values are Client Authoritative, the server has no ability to change them.
 
 ### Intermediate State
 
-Intermediate State refers to any values that are in between input and output, as these values are modified by inputs, but also modify the output state.
+The intermediate state refers to any values that are in between input and output, as these values are modified by inputs, but also modify the output state.
 
 A good example of this is **velocity**. Velocity is affected by **acceleration**, but it also modifies **location**.
 
 ### Output State
 
-Output State refers to any values that are the end result of performing a move. 
+The output state refers to any values that are the end result of performing a move. 
 
 For most projects, this will consist mainly of the **capsule location**, and the **movement mode**. These are the "end values" that affect what the player sees in the world.
 
-::: tip
-All types of state values are stoerd in the SavedMove, but only the input state should be replayed in the PrepMoveFor function.
+::: info NOTE
+All types of state values are stored in the SavedMove, but only the input state should be replayed in the PrepMoveFor function.
 :::
  
 ### Other Terminology

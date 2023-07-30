@@ -1,15 +1,46 @@
 # Why use Custom Network Data
 
+There are four main reasons why you might need to use custom network data:
 
-There are three main reasons why you might need to use custom network data: Sending extra input state, sending extra output state, achieving frame zero desync correction, or removing unused state.
-Sending Extra Input State
-Currently the CMC sends extremely minimal input state, and you only really get to play around with CompressedFlags, so sometimes you might need more data. Maybe you want an extra 8 compressed flags, maybe you need to send an extra joystick input or some other type of input data. Note of caution here that if you think you need to send a lot of input state (like vectors or transforms), you are probably thinking about it wrong. The CharacterNetworkMoveData is sent from the client to the server every single frame, so if you want to send data for a one-off event like Entering a Slide where you include a bunch of floats, vectors, etc, do this in a reliable RPC.
-Sending Extra Output State
-As previously mentioned, the client will send input state, but also a minimal version of the output state of a move. The goal of sending a little bit of output state is to make sure the client is in sync with the server. Currently, the client pretty much just sends location and movement mode, but sometimes this is not enough. If you had a custom state that was critical to performing moves, you might want to also send this too. The goal here is that the server can use this as an additional way to detect if the client is out of sync, and issue a net correction faster. If the server issues the net correction quick enough, the client will be smoothly corrected, meaning the player might not even notice. Note that the actual line between intermediate state and output state is a bit arbitrary. You can promote intermediate state to output state if you think it's important enough. The main difference is just that output state is what gets sent from the client every frame, whereas intermediate state is not.
-Frame Zero Desync Correction
-So the two above reasons to use Custom Network Data targeted sending data from the client to the server, but its also important to consider overriding the data being sent from the server to the client. This is only really applicable in the case of a net correction. Frame Zero Desync correction means that, no matter what kind of desync happens, when the client receives an update from the server it will recover back to the server’s state in one ClientAdjustment call. If you have created any additional intermediate or output state whatsoever, then to get frame zero desync correction you need to send custom MoveResponse data. To see why, just imagine you have the smallest of intermediate states: an enum indicating the walk type (slow, normal, sprint). If the client gets a desync, and this state is not in sync with the server, we will get a correction from the server containing info on our new position, rotation, movement mode, etc, but not anything about the walk type. Then we will re-simulate these moves, but with the incorrect walk type again. This will cause us to have more net corrections! If we achieve frame zero desync correction, by sending all intermediate and output states to the client, then even every state in the CMC could get horribly out of sync by thousands of units, but they would all be brought back into sync in just one net correction!
-Removing Unused State
-So this is more of an optimization, but if you look into the MoveData being sent, you might notice some values your game doesn’t utilize, so to save some extra bandwidth, you can simply not send these values. Some common values you might not use are: MovementBase info, ControlRotation Roll (most games only need Pitch and Yaw), or certain compressed flags like crouch or Engine Reserved might not be in your game.
+1. Custom input state data.
+2. Custom output state data.
+3. Removing unused state data.
+4. Frame zero desync corrections.
 
-Note: It will make more sense to read Client Move Data before Server Response Data, even if you only want to override the implementation of Server Response Data.
+## Custom Input State Data
 
+Currently the default **CharacterMovementComponent** sends an extremely **minimal** input state, and you only really get to customize a few CompressedFlags. This leads to circumstances where you need more **custom data**, but are unable to do so with the **default options**. Maybe you need more CompressedFlags, maybe you need to send extra inputs for things such as joysticks. By using **custom** network data, you are able to expand on the **defaults** and add space for your own data to be sent.
+
+::: warning 
+If you think you need to send **a lot of data** (such as vectors or transforms) in the input state, you are probably thinking about it **wrong**. If you want to send data for a one-off event like starting a slide, where you need to include floats, vectors, do it in a **reliable RPC**.
+:::
+
+## Custom Output State Data
+
+As previously mentioned, the default **client** will send its input state to the **server**, but it will also send its own minimal **output** state of the move. Currently, the client just sends the output location and movement mode, but sometimes this may not be enough. If you had a custom value that was **critical** to performing moves, you might also want to send it as well. 
+
+The **goal** is that the server can use the client's output state as an additional way to detect if the client is **out of sync**, and isse a **net correction** faster. If the server issues the net correction quick enough, the client will be **smoothly** corrected, meaning the player might not even **notice** the correction. 
+
+::: info NOTE
+The actual difference between the intermediate state and the output state is a bit arbitrary. You can promote the intermediate state to the output state if you think it's important enough. The main difference is that the output state is what gets send from the clientevery frame, whereas the intermediate state is not.
+:::
+
+## Removing Unused State Data
+
+From more of an **optimization** standpoint, if you look into the **MoveData** being sent, you may notice that some values being sent aren't actually being used in your game. By not sending those values, you can save a little bit of extra **bandwidth**, or use that bandwidth for more **critical** values. 
+
+A few **common** values that you might not be using are:
+
+1. MovementBase information.
+2. ControlRotation roll (most games only use pitch and yaw).
+3. Certain CompressedFlags, such as crouch or **engine reserved** flags.
+
+## Frame Zero Desync Corrections
+
+The previously mentioned reasons all targeted sending custom data from the **client** to the **server**, but its also **important** to consider overriding the data being sent from the **server** to the **client**. Frame zero desync correction means that no matter what kind of desync happens, when the client recieves an update from the server, it will recover back to the server's state in one **ClientAdjustment** call. However, if you have added **any** intermediate or output state values, then you will need to send **custom MoveResponse** data to achieve frame zero desync correction. 
+
+**To see why, imagine this example:**
+
+You've added an **enum** indicating the walk type (slow, normal, sprint) to the **intermediate** state values. If the client gets a **desync**, and this state is not in sync with the server, we will get a correction from the server containing info with the **correct** MoveData, but not anything about the walk type. Then the client will **re-simulate** these moves, but with the **incorrect** walk type again. This will cause the server to send more **net corrections**, until the client ends up **completely** out of sync.
+
+But by sending all intermediate and output states to the client and achieving frame zero desync correction, even if every state on the client got **horribly** out of sync, it would all be brought back into sync in just **one** net correction!
