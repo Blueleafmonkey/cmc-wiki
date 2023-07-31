@@ -106,10 +106,14 @@ watchPostEffect(async () => {
 
 @media (min-width: 1440px) {
   .VPSidebar {
-    padding-left: max(32px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2));
-    width: calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) - 32px);
+    /** max(32px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2)) */
+    padding-left: 32;
+    /** calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) - 32px) */
+    width: var(--vp-sidebar-width);
   }
 }
+
+
 
 @media (min-width: 960px) {
   .curtain {

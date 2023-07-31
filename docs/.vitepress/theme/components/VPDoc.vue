@@ -196,11 +196,12 @@ const pageName = computed(() =>
 }
 
 .content-container {
-  margin: 0 auto;
+  margin: 0 0 0 0;
 }
 
 .VPDoc.has-aside .content-container {
-  max-width: 688px;
+  /** 688px */
+  max-width: 100%;
 }
 
 .external-link-icon-enabled :is(.vp-doc a[href*='://'], .vp-doc a[target='_blank'])::after {
