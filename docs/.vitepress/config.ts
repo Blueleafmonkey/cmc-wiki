@@ -35,6 +35,13 @@ export default defineConfig({
                   { text: 'What is it?', link: '/Guides/CustomNetworkData/WhatAndWhy/what' },
                   { text: 'Why use it?', link: '/Guides/CustomNetworkData/WhatAndWhy/why' }
                 ]
+              },
+              { text: 'Client Move Data', 
+                collapsed: true,
+                items: [
+                  { text: 'Default Pipeline', link: '/Guides/CustomNetworkData/ClientMoveData/defaultPipeline' },
+                  { text: 'Adding Custom Data', link: '/Guides/CustomNetworkData/ClientMoveData/addingCustomData' }
+                ]
               }
             ]
           }

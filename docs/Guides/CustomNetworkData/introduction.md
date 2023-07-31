@@ -6,7 +6,7 @@ outline: deep
 
 ## Overview
 
-This document will cover how to use and send custom network data between the server and client through the Character Movement Component, beyond just custom flags. This could include sending additional compressed flags, additional input vectors, etc.
+This document will cover how to use and send **custom network data** between the **server** and **client** through the [**CharacterMovementComponent**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/UCharacterMovementComponent). This could include sending additional compressed flags, additional input vectors, and more custom data.
 
 ::: warning
 You must be using Packed Movement RPCs for this to work! (This is determined by console variable NetUsePackedMovementRPCs)
@@ -43,6 +43,6 @@ All types of state values are stored in the SavedMove, but only the input state 
 
 You will see the terms **client** and **server** a lot. In this case, client refers specifically to the owning client.
 
-**Net Correction** and **Client Adjustment** are synonymous (they mean the same thing).
+**Net Correction** and **ClientAdjustment** are synonymous (they mean the same thing).
 
 Unreal Engine internally refers to the **network data** as **PacketMovementRPCs**. This may be because the system was originally intended to just use more compressed flags as triggers, instead of RPCs (which is a very good use, but not the only use).

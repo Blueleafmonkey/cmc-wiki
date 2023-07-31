@@ -1,4 +1,11 @@
+---
+outline: deep
+---
+
+
 # Why use Custom Network Data
+
+## Overview
 
 There are four main reasons why you might need to use custom network data:
 
@@ -9,7 +16,7 @@ There are four main reasons why you might need to use custom network data:
 
 ## Custom Input State Data
 
-Currently the default **CharacterMovementComponent** sends an extremely **minimal** input state, and you only really get to customize a few CompressedFlags. This leads to circumstances where you need more **custom data**, but are unable to do so with the **default options**. Maybe you need more CompressedFlags, maybe you need to send extra inputs for things such as joysticks. By using **custom** network data, you are able to expand on the **defaults** and add space for your own data to be sent.
+Currently the default [**CharacterMovementComponent**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/UCharacterMovementComponent) sends an extremely **minimal** input state, and you only really get to customize a few CompressedFlags. This leads to circumstances where you need more **custom data**, but are unable to do so with the **default options**. Maybe you need more CompressedFlags, maybe you need to send extra inputs for things such as joysticks. By using **custom** network data, you are able to expand on the **defaults** and add space for your own data to be sent.
 
 ::: warning 
 If you think you need to send **a lot of data** (such as vectors or transforms) in the input state, you are probably thinking about it **wrong**. If you want to send data for a one-off event like starting a slide, where you need to include floats, vectors, do it in a **reliable RPC**.
@@ -37,7 +44,7 @@ A few **common** values that you might not be using are:
 
 ## Frame Zero Desync Corrections
 
-The previously mentioned reasons all targeted sending custom data from the **client** to the **server**, but its also **important** to consider overriding the data being sent from the **server** to the **client**. Frame zero desync correction means that no matter what kind of desync happens, when the client recieves an update from the server, it will recover back to the server's state in one **ClientAdjustment** call. However, if you have added **any** intermediate or output state values, then you will need to send **custom MoveResponse** data to achieve frame zero desync correction. 
+The previously mentioned reasons all targeted sending custom data from the **client** to the **server**, but its also **important** to consider overriding the data being sent from the **server** to the **client**. Frame zero desync correction means that no matter what kind of desync happens, when the client recieves an update from the server, it will recover back to the server's state in one [**ClientAdjustment**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FClientAdjustment) call. However, if you have added **any** intermediate or output state values, then you will need to send **custom MoveResponse** data to achieve frame zero desync correction. 
 
 **To see why, imagine this example:**
 
