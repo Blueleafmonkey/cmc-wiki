@@ -1,23 +1,29 @@
 {
-  "hash": "8d738c2c",
-  "browserHash": "771c2b66",
+  "hash": "e6e1be73",
+  "browserHash": "2b797040",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "e1b37b0b",
+      "fileHash": "5138804f",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
       "src": "../../../../node_modules/@vue/devtools-api/lib/esm/index.js",
       "file": "vitepress___@vue_devtools-api.js",
-      "fileHash": "b60c9459",
+      "fileHash": "26110891",
       "needsInterop": false
     },
-    "@theme/index": {
-      "src": "../../../../node_modules/vitepress/dist/client/theme-default/index.js",
-      "file": "@theme_index.js",
-      "fileHash": "a0acc8af",
+    "@vueuse/core": {
+      "src": "../../../../node_modules/@vueuse/core/index.mjs",
+      "file": "@vueuse_core.js",
+      "fileHash": "4c4abd5c",
+      "needsInterop": false
+    },
+    "body-scroll-lock": {
+      "src": "../../../../node_modules/body-scroll-lock/lib/bodyScrollLock.esm.js",
+      "file": "body-scroll-lock.js",
+      "fileHash": "f85bf685",
       "needsInterop": false
     }
   },

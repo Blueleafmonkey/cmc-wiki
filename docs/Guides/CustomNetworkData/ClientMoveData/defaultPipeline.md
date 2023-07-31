@@ -52,7 +52,7 @@ virtual void CallServerMovePacked(
 It is **greatly encouraged** for everyone to go ahead and **read** through this function in the source code **themselves**, as it is only 49 lines long, and can help with **understanding** it better.
 :::
 
-### Filling the MoveContainer
+### Filling the MoveDataContainer
 
 Now, inside of the function we first get a **reference** to something called a [**FCharacterNetworkMoveDataContainer**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FCharacterNetworkMoveDataContain-/), and use the its [**ClientFillNetworkMoveData**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FCharacterNetworkMoveDataContain-/ClientFillNetwor-/) method to fill it with the client data, which contains all 3 moves previously talked about.
 
@@ -134,8 +134,51 @@ Up until now we've just been **passing** around the data, but now we finally hav
 This was **not** **possible** until recent versions of Unreal Engine (just before Unreal Engine 5 released).
 :::
 
-Now that we have a full **MoveContainer**, we can begin **serializing** the data. This is simply done by using the **MoveDataContainer**'s **Serialize** method
+Now that we have a full **MoveDataContainer**, we can begin **serializing** the data. This is simply done by using the **MoveDataContainer**'s [**Serialize**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FCharacterNetworkMoveDataContain-/Serialize/) method.
 
 ```cpp
 MoveDataContainer.Serialize(*this, ServerMoveBitWriter, ServerMoveBitWriter.PackageMap)
 ```
+
+Inside of the **MoveDataContainer**'s **Serialize** method, we can see that all it really does is just call the **Serialize** methods on our three **NetworkMoves**. 
+
+```cpp
+if (!NewMoveData->Serialize(CharacterMovement, Ar, PackageMap, FCharacterNetworkMoveData::ENetworkMoveType::NewMove))
+{
+	return false;
+}
+```
+
+But how do we **actually** serialize? With an **archive**. An archive is a **bitstream** that allows you to “push” bits **onto** or **off of** it. If you haven’t seen a bitstream, don’t worry since you don’t really need to know how it **works**, just how to **use** it. In our case, the archive is **ServerMoveBitWriter**. So let’s see what happens when we call **Serialize** on our **NetworkMoves**.
+
+```cpp
+bool FCharacterNetworkMoveData::Serialize(UCharacterMovementComponent& CharacterMovement, FArchive& Ar, UPackageMap* PackageMap, FCharacterNetworkMoveData::ENetworkMoveType MoveType)
+{
+	NetworkMoveType = MoveType;
+
+	bool bLocalSuccess = true;
+	const bool bIsSaving = Ar.IsSaving();
+
+	Ar << TimeStamp;
+
+	// TODO: better packing with single bit per component indicating zero/non-zero
+	Acceleration.NetSerialize(Ar, PackageMap, bLocalSuccess);
+
+	Location.NetSerialize(Ar, PackageMap, bLocalSuccess);
+
+	// ControlRotation : FRotator handles each component zero/non-zero test; it uses a single signal bit for zero/non-zero, and uses 16 bits per component if non-zero.
+	ControlRotation.NetSerialize(Ar, PackageMap, bLocalSuccess);
+
+	SerializeOptionalValue<uint8>(bIsSaving, Ar, CompressedMoveFlags, 0);
+
+		SerializeOptionalValue<UPrimitiveComponent*>(bIsSaving, Ar, MovementBase, nullptr);
+		SerializeOptionalValue<FName>(bIsSaving, Ar, MovementBaseBoneName, NAME_None);
+		SerializeOptionalValue<uint8>(bIsSaving, Ar, MovementMode, MOVE_Walking);
+
+	return !Ar.IsError();
+}
+```
+
+Here you can see in only a few lines all of what the CMC is sending from client to server. Pay attention to this carefully since this is where we actually control what data is being sent to the server. The Ar is the FArchive object, and we can add data to it in several showcased ways. At the top, the TimeStamp is pushed onto the archive using the << operator, this just means that the entire 4 byte float is added to the bits. Then we see some helper functions on the Acceleration, Location, and ControlRotation variables which are adding themselves to the Archive under the hood. Note that the Location variable is a FVector_NetQuantized100 and the Acceleration variable is a FVector_NetQuantized10, ControlRotation is just an FRotator. We also have another helper function: SerializeOptionalValue(), which allows us to optionally serialize a value based on a bool.
+There is one more very helpful way to add bits to the bitstream:
+
