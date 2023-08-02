@@ -44,7 +44,8 @@ export default defineConfig({
                 ]
               }
             ]
-          }
+          },
+          { text: 'Networked Bools', link: '/networked-bools'}
         ]
       }
     ],
