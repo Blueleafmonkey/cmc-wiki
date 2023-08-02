@@ -18,7 +18,7 @@ During the **client** CharacterMovementComponent's **TickComponent**, the functi
 
 However, this last step is not that simple. If you have watched [**Delgoodie's CMC tutorials**](https://www.youtube.com/watch?v=urkLwpnAjO0&list=PLXJlkahwiwPmeABEhjwIALvxRSZkzoQpk), you would remember that when you added custom variables to the [**SavedMove**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FSavedMove_Character/) struct, you also had to update the [**CanCombineWith**](https://docs.unrealengine.com/5.2/en-US/API/Runtime/Engine/GameFramework/FSavedMove_Character/CanCombineWith/) function.
 
-This function checks to see if it can **combine** the current NewMove with the last SavedMove (reffered to as the **PendingMove**). This is because the client doesn't actualy run CallServerMovePacked **every** frame, but it actually runs it every **other** frame. In the first frame, it actually just **saves** the SavedMove as the PendingMove, and then in the **next** frame it checks to see if it can **combine** the PendingMove with the NewMove. If it can, then it just sends one SavedMove for **both** frames, instead of sending two, which **improves** bandwidth usage.
+This function checks to see if it can **combine** the current NewMove with the last SavedMove (referred to as the **PendingMove**). This is because the client doesn't actualy run CallServerMovePacked **every** frame, but it actually runs it every **other** frame. In the first frame, it actually just **saves** the SavedMove as the PendingMove, and then in the **next** frame it checks to see if it can **combine** the PendingMove with the NewMove. If it can, then it just sends one SavedMove for **both** frames, instead of sending two, which **improves** bandwidth usage.
 
 ::: info NOTE
 You should only combine moves if they have basically all the same input state data. 
@@ -26,7 +26,7 @@ You should only combine moves if they have basically all the same input state da
 
 A good example of this happening is if the player was just running in a **straight** line. If the **acceleration** in both frames is pretty much the same, and the **velocity** also doesn't change much, then it can **combine** the moves and send them as one combined move to the server. The combined move uses the **output** state of the most **recent** SavedMove, but it **adds** the deltaTimes of both moves, so that it is effectively one big move.
 
-However, if the client was **wrong**, and the moves were **different** (say the player pressed jump in the newest SavedMove, but wasn't in the PendingMove), then it needs to send **both** moves, **seperately**, but in the same frame. 
+However, if the client was **wrong**, and the moves were **different** (say the player pressed jump in the newest SavedMove, but wasn't in the PendingMove), then it needs to send **both** moves, **separately**, but in the same frame. 
 
 You can see how this system works really well, as in **most** 60fps games, the player is **usually** holding down the same keys for a **majority** of the frames, and only **changes** the button states every few seconds. 
 
@@ -108,7 +108,7 @@ void FCharacterNetworkMoveDataContainer::ClientFillNetworkMoveData(const FSavedM
 
 
 
-Then, in the **NetworkMove**'s **ClientFillNetworkData** method, we only take the **neccessary** data from the SavedMove, and use it to **fill** the NetworkMove
+Then, in the **NetworkMove**'s **ClientFillNetworkData** method, we only take the **necessary** data from the SavedMove, and use it to **fill** the NetworkMove
 
 ```cpp
 NetworkMoveType = MoveType;
@@ -121,7 +121,7 @@ MovementMode = ClientMove.EndPackedMovementMode;
 Just as a quick **summary**, lets go over what we have just looked at. First, we call **ClientFillNetworkMoveData** on the **MoveDataContainer**, and pass in our **NewMove**, **PendingMove**, and **OldMove**. Then, it calls **ClientFillNetworkData** (different from the one we called on the MoveDataContainer) on each of the moves we passed in, and stores only the **necessary** data in the new **NetworkMove** variables; **NewMoveData**, **PendingMoveData**, and **OldMoveData**.
 Then those **NetworkMove** variables are passed into the **MoveDataContainer**.
 
-### Serialising the moves
+### Serializing the moves
 
 Up until now we've just been **passing** around the data, but now we finally have to **serialize** it. If you aren't familiar with serializing, it just means **converting** all the data to raw **bits**. This **serialization** is done for two reasons:
 
@@ -148,7 +148,7 @@ if (!NewMoveData->Serialize(CharacterMovement, Ar, PackageMap, FCharacterNetwork
 ```
 
 ::: details
-This is also repeated for the **PendingMoveData** and **OldMoveData**, as seen on the **higlighted** lines.
+This is also repeated for the **PendingMoveData** and **OldMoveData**, as seen on the **highlighted** lines.
 
 ```cpp{7,17,27}
 bool FCharacterNetworkMoveDataContainer::Serialize(UCharacterMovementComponent& CharacterMovement, FArchive& Ar, UPackageMap* PackageMap)
@@ -222,7 +222,7 @@ bool FCharacterNetworkMoveData::Serialize(UCharacterMovementComponent& Character
 
 In just these few lines, you can see **all** of the **data** being sent from the **client** to the **server**. Pay **careful** attention to this, since this is where we will actually **control** what data is being sent to the **server**. The **Ar** variable in the code is an **FArchive** object, and we can **add** data to it in **several** ways. A few of these ways are showcased in this function. At the top, we can see the **TimeStamp** of the moves being pushed onto the **Ar** archive with the **bitwise** << **operator**. This essentially just **copies** the entire 4 byte float onto the archive. 
 
-Then, we can see the **NetSerialise** method being used on the **Acceleration**, **Location** and **ControlRotation** variables. This method pretty much does the same thing under the hood, by just adding the data onto the archive.
+Then, we can see the **NetSerialize** method being used on the **Acceleration**, **Location** and **ControlRotation** variables. This method pretty much does the same thing under the hood, by just adding the data onto the archive.
 
 ::: info NOTE
 The **Location** variable is a **FVector_NetQuantized1000**, the **Acceleration** variable is a **FVector_NetQuantized10**, and the **ControlRotation** is just an **FRotator**.
@@ -295,6 +295,6 @@ We have **finally** reached the **end** of the **default Client Move Data pipeli
 
 We started on the **client**, which **performed** the moves on the **TickComponent**, and **recorded** the **state values** in the **SavedMove**. Then it checked how many **moves** to send to the **server**, filled those **SavedMoves** into the **NetworkMoveData** objects inside the **MoveDataContainer**, **serialized** all the **data**, and **sent** it to the **server**. 
 
-Once sent to the **server**, we **deserialized** the bits into **NetworkMoveData** objects, then called **ServerMove_PerforMovement** for each of the received moves. This **performed** the moves on the **server**, and then **checked** if the **client's output** matched the **server's output**, finally **acknowledging** the move or **issuing** a **correction** if the client was **out of sync**.
+Once sent to the **server**, we **deserialized** the bits into **NetworkMoveData** objects, then called **ServerMove_PerformMovement** for each of the received moves. This **performed** the moves on the **server**, and then **checked** if the **client's output** matched the **server's output**, finally **acknowledging** the move or **issuing** a **correction** if the client was **out of sync**.
 
 
