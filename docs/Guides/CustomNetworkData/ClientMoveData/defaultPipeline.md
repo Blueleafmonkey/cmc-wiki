@@ -21,7 +21,7 @@ However, this last step is not that simple. If you have watched [**Delgoodie's C
 This function checks to see if it can **combine** the current NewMove with the last SavedMove (reffered to as the **PendingMove**). This is because the client doesn't actualy run CallServerMovePacked **every** frame, but it actually runs it every **other** frame. In the first frame, it actually just **saves** the SavedMove as the PendingMove, and then in the **next** frame it checks to see if it can **combine** the PendingMove with the NewMove. If it can, then it just sends one SavedMove for **both** frames, instead of sending two, which **improves** bandwidth usage.
 
 ::: info NOTE
-You hsould only combine moves if they have basically all the same input state data. 
+You should only combine moves if they have basically all the same input state data. 
 :::
 
 A good example of this happening is if the player was just running in a **straight** line. If the **acceleration** in both frames is pretty much the same, and the **velocity** also doesn't change much, then it can **combine** the moves and send them as one combined move to the server. The combined move uses the **output** state of the most **recent** SavedMove, but it **adds** the deltaTimes of both moves, so that it is effectively one big move.
