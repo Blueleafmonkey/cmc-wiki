@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: "CMC Wiki"
-  text: "In-depth wiki about UE5's CMC"
+  text: "In-depth wiki for UE5's CMC"
   tagline: 
   actions:
     - theme: brand
