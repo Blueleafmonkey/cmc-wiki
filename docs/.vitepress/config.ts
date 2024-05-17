@@ -1,17 +1,11 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "CMC Wiki",
-  description: "In-depth guide on UE5's CMC",
+  description: "In-depth wiki for UE5's CMC",
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { 
-        text: 'Docs',
-        items: []
-      },
       { 
         text: 'Guides',
         items: [
@@ -44,14 +38,12 @@ export default defineConfig({
                 ]
               }
             ]
-          },
-          { text: 'Networked Bools', link: '/networked-bools'}
+          }
         ]
       }
     ],
-
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/Blueleafmonkey/CMC-Wiki' }
+      { icon: 'github', link: 'https://github.com/OmniacDEV/CMC-Wiki' }
     ]
   },
   base: '/CMC-Wiki/'
